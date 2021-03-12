@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { AlertController } from '@ionic/angular';
 import { Expense } from '../expense.model';
 
 @Component({
@@ -18,13 +19,26 @@ export class HomePage {
     {expenseReason: 'wimming pool', expenseAmount: 5.99},
   ];
 
-  constructor() {}
+  constructor(public alertController: AlertController) {}
+
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Add expense error',
+      subHeader: 'Invalid expense data',
+      message: 'No information provided.',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
 
   onConfirmClick() {
     if (this.inputReason.value.trim().length > 0 && this.inputAmount.value > 0) {
-      console.log('>>>', this.inputReason.value, this.inputAmount.value);
       this.expenses.push(new Expense(this.inputReason.value, this.inputAmount.value));
       this.clearInputs();
+    } else {
+      this.presentAlert();
     }
 
   }
